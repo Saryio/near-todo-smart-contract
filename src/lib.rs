@@ -2,14 +2,13 @@ use std::collections::HashMap;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
-use near_sdk::{near_bindgen, env};
+use near_sdk::{near_bindgen, env, AccountId};
 
-near_sdk::setup_alloc!();
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct TaskInfo{
-    signer_id: String,
+    signer_id: AccountId,
     done: bool
 }
 
