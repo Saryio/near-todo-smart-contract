@@ -27,8 +27,12 @@ impl Todos {
         });
     }
 
-    pub fn read(&self) -> &HashMap<String, TaskInfo>{
+    pub fn read_all(&self) -> &HashMap<String, TaskInfo>{
         &self.todos
+    }
+
+    pub fn read(&self, task: String) -> &TaskInfo{
+        &self.todos.get(&task).unwrap()
     }
 
     pub fn update(&mut self, task: String, done: bool){
@@ -44,15 +48,15 @@ impl Todos {
 // #[cfg(test)]
 // mod tests {
 //     use super::*;
-//     use near_sdk::MockedBlockchain;
+//     use near_sdk::{MockedBlockchain, PublicKey, Gas};
 //     use near_sdk::{testing_env, VMContext};
 
-//     fn get_context(input: Vec<u8>, is_view: bool) -> VMContext {
+//     fn get_context(input: vec<u8>, is_view: bool) -> VMContext {
 //         VMContext {
-//             current_account_id: "alice.testnet".to_string(),
-//             signer_account_id: "robert.testnet".to_string(),
-//             signer_account_pk: vec![0, 1, 2],
-//             predecessor_account_id: "jane.testnet".to_string(),
+//             current_account_id: AccountId::new_unchecked("alice.testnet".to_string()),
+//             signer_account_id: AccountId::from("robert.testnet"),
+//             signer_account_pk: PublicKey::from([0,1,2]),
+//             predecessor_account_id: AccountId::from("jane.testnet"),
 //             input,
 //             block_index: 0,
 //             block_timestamp: 0,
@@ -60,20 +64,21 @@ impl Todos {
 //             account_locked_balance: 0,
 //             storage_usage: 0,
 //             attached_deposit: 0,
-//             prepaid_gas: 10u64.pow(18),
-//             random_seed: vec![0, 1, 2],
-//             is_view,
+//             prepaid_gas: Gas(10u64.pow(18)),
+//             random_seed: [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 32, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
 //             output_data_receivers: vec![],
 //             epoch_height: 19,
 //         }
 //     }
 
 //     #[test]
-//     fn test(){
+//     fn read() {
 //         let context = get_context(vec![], false);
 //         testing_env!(context);
-//         // let contract = Todos { todos: HashMap::new() };
-//         env::log(b"testetetetetete")
+//         let mut contract = Todos { todos: HashMap::new()};
+//         contract.create("Some task here".to_string(), false);
+//         let contract_task = contract.read().get("Some task here").unwrap();
+//         assert_eq!(TaskInfo{signer_id: AccountId::from("alice.testnet"), done: false}, None);
 //     }
 
 //     #[test]
@@ -81,29 +86,29 @@ impl Todos {
 //         let context = get_context(vec![], false);
 //         testing_env!(context);
 //         let mut contract = Todos { todos: HashMap::new() };
-//         contract.create("Make a video call".to_string(), false);
+//         contract.create("make a video call".to_string(), false);
 
-//         assert_eq!(contract.read().get("Make a video call").unwrap().done, false);
+//         assert_eq!(contract.read().get("make a video call").unwrap().done, false);
 //     }
 
 //     #[test]
 //     fn update(){
 //         let context = get_context(vec![], false);
 //         testing_env!(context);
-//         let mut contract = Todos { todos: HashMap::new() };
+//         let mut contract = Todos { todos: hashmap::new() };
 
-//         contract.create("Dar um tapa no psyke".to_string(), false);
-//         assert_eq!(contract.read().get("Dar um tapa no psyke").unwrap().done, false);
-//         contract.update("Dar um tapa no psyke".to_string(), true);
-//         assert_eq!(contract.read().get("Dar um tapa no psyke").unwrap().done, true);
+//         contract.create("dar um tapa no psyke".to_string(), false);
+//         assert_eq!(contract.read().get("dar um tapa no psyke").unwrap().done, false);
+//         contract.update("dar um tapa no psyke".to_string(), true);
+//         assert_eq!(contract.read().get("dar um tapa no psyke").unwrap().done, true);
 //     }
 
 //     #[test]
 //     fn delete() {
 //         let context = get_context(vec![], false);
 //         testing_env!(context);
-//         let mut contract = Todos { todos: HashMap::new() };
-//         contract.create("Drink watter".to_string(), true);
-//         contract.delete("Drink watter".to_string());
+//         let mut contract = todos { todos: hashmap::new() };
+//         contract.create("drink watter".to_string(), true);
+//         contract.delete("drink watter".to_string());
 //     }
 // }
