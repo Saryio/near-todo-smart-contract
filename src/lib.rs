@@ -21,6 +21,7 @@ pub struct Todos{
 impl Todos {
 
     pub fn create(&mut self, task: String, done: bool){
+        assert_eq!(true, self.verify_task_owner(&task), "Verifying if the signer are the task owner");
         self.todos.insert(task, TaskInfo{
             signer_id: env::signer_account_id(),
             done
@@ -36,12 +37,27 @@ impl Todos {
     }
 
     pub fn update(&mut self, task: String, done: bool){
+        assert_eq!(true, self.verify_task_owner(&task), "Verifying if the signer are the task owner");
         self.todos.remove(&task);
         self.create(task, done);
     }
 
     pub fn delete(&mut self, task: String){
+        assert_eq!(true, self.verify_task_owner(&task), "Verifying if the signer are the task owner");
         self.todos.remove(&task);
+    }
+
+    fn verify_task_owner(&self, task: &String)-> bool{
+        match self.todos.get(task) {
+            Some(TaskInfo { signer_id, done }) => {
+                if signer_id == &env::signer_account_id() {
+                    true
+                }else {
+                    false
+                }
+            },
+            None => true,
+        }
     }
 }
 
